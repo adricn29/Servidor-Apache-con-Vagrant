@@ -1,14 +1,10 @@
-# Definición de la configuración de la máquina virtual
 Vagrant.configure("2") do |config|
-  # Especificamos la caja que se utilizará (en este caso, una caja de Ubuntu)
-  config.vm.box = "ubuntu/bionic64"
-  
-  # Asignamos 512 MB de RAM y 1 CPU
+  config.vm.network "private_network", type: "dhcp"  # Opción alternativa de red
   config.vm.provider "virtualbox" do |vb|
     vb.memory = "512"
     vb.cpus = 1
   end
-
+end
   # Configuración del servidor Apache
   config.vm.provision "shell", inline: <<-SHELL
     # Actualizamos el sistema
