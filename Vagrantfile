@@ -1,6 +1,12 @@
 Vagrant.configure("2") do |config|
-    # Especificar la box base
-    config.vm.box = "ubuntu/focal64"
+  config.vm.box = "ubuntu/bionic64"
+  
+  # Configuración SSH
+  config.ssh.username = "vagrant"
+  config.ssh.private_key_path = "~/.vagrant.d/insecure_private_key"
+  config.ssh.insert_key = false
+end
+
   
     # Configurar la cantidad de RAM y CPU
     config.vm.provider "virtualbox" do |vb|
