@@ -1,28 +1,28 @@
+# Vagrantfile
 Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/bionic64"
-  
-  # Configuración SSH
-  config.ssh.username = "vagrant"
-  config.ssh.private_key_path = "~/.vagrant.d/insecure_private_key"
-  config.ssh.insert_key = false
-end
 
-  
-    # Configurar la cantidad de RAM y CPU
+    # Configurar la caja de Ubuntu 22.04 
+    config.vm.box = "ubuntu/jammy64"
+
+    # Asignar un nombre a la mÃ¡quina virtual
+    config.vm.hostname = "UnServer"
+
+    # Configurar la red para poder acceder al servidor web 
+    config.vm.network "private_network", ip: "192.168.56.25"
+
+    # Asignar recursos a la VM
     config.vm.provider "virtualbox" do |vb|
-      vb.memory = "1024"
-      vb.cpus = 1
+        vb.memory = "512"
+        vb.cpus = 1
     end
-  
-    # Configurar el aprovisionamiento para instalar Apache
+
+    # Instalar Apache al iniciar la VM 
     config.vm.provision "shell", inline: <<-SHELL
-      sudo apt-get update
-      sudo apt-get install -y apache2
+        sudo apt-get update
+        sudo apt-get install -y apache2
+        sudo systemctl enable apache2
     SHELL
-  
-    # Compartir la carpeta del servidor web de Apache
-    config.vm.synced_folder "./src", "/var/www/html"
-  
-    # Hacer que la VM exponga el puerto 80 al puerto 8080 del host
-    config.vm.network "forwarded_port", guest: 80, host: 8080
-  end
+
+    # Compartir la carpeta local con la carpeta de Apache 
+    config.vm.synced_folder "src", "/var/www/html", owner: "www-data", group: "www-data"
+    end
