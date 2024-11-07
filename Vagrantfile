@@ -1,7 +1,9 @@
 # Configuración de Vagrantfile para crear una VM con Apache
 Vagrant.configure("2") do |config|
-  # Usar una imagen base de Ubuntu
   config.vm.box = "ubuntu/bionic64"
+  config.vm.boot_timeout = 600  # Aumenta el tiempo de espera a 10 minutos
+end
+
 
   # Configuración de la red y recursos
    config.vm.network "private_network", ip: "192.168.57.10"
