@@ -7,7 +7,7 @@ Vagrant.configure("2") do |config|
     end
     
     # Configura la carpeta compartida
-    config.vm.synced_folder "./paginas_web", "/var/www/html"  # Cambia este directorio si es necesario
+    config.vm.synced_folder "./apache-web/apache-web", "/var/www/html"  # Cambia este directorio si es necesario
     
     # Provisiona la máquina para instalar Apache
     config.vm.provision "shell", inline: <<-SHELL
