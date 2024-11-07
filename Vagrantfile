@@ -1,28 +1,28 @@
-# Vagrantfile
+# Definición de la configuración de la máquina virtual
 Vagrant.configure("2") do |config|
+  # Especificamos la caja que se utilizará (en este caso, una caja de Ubuntu)
+  config.vm.box = "ubuntu/bionic64"
+  
+  # Asignamos 512 MB de RAM y 1 CPU
+  config.vm.provider "virtualbox" do |vb|
+    vb.memory = "512"
+    vb.cpus = 1
+  end
 
-    # Configurar la caja de Ubuntu 22.04 
-    config.vm.box = "ubuntu/jammy64"
+  # Configuración del servidor Apache
+  config.vm.provision "shell", inline: <<-SHELL
+    # Actualizamos el sistema
+    sudo apt-get update -y
+    sudo apt-get upgrade -y
 
-    # Asignar un nombre a la mÃ¡quina virtual
-    config.vm.hostname = "UnServer"
+    # Instalamos Apache
+    sudo apt-get install apache2 -y
 
-    # Configurar la red para poder acceder al servidor web 
-    config.vm.network "private_network", ip: "192.168.56.25"
+    # Creamos una página de prueba en el directorio por defecto de Apache
+    echo '<html><body><h1>Hola Mundo desde Apache!</h1></body></html>' | sudo tee /var/www/html/index.html
+  SHELL
 
-    # Asignar recursos a la VM
-    config.vm.provider "virtualbox" do |vb|
-        vb.memory = "512"
-        vb.cpus = 1
-    end
+  # Compartir la carpeta local con el directorio del servidor Apache
+  config.vm.synced_folder "./pagina_web", "/var/www/html"
+end
 
-    # Instalar Apache al iniciar la VM 
-    config.vm.provision "shell", inline: <<-SHELL
-        sudo apt-get update
-        sudo apt-get install -y apache2
-        sudo systemctl enable apache2
-    SHELL
-
-    # Compartir la carpeta local con la carpeta de Apache 
-    config.vm.synced_folder "src", "/var/www/html", owner: "www-data", group: "www-data"
-    end
