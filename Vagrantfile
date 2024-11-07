@@ -1,24 +1,22 @@
-# Configuración de Vagrantfile para crear una VM con Apache
 Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/bionic64"
-  config.vm.boot_timeout = 600  # Aumenta el tiempo de espera a 10 minutos
-end
-
-
-  # Configuración de la red y recursos
-   config.vm.network "private_network", ip: "192.168.57.10"
-  config.vm.provider "virtualbox" do |vb|
-    vb.memory = "512"       # Asignar 512MB de RAM
-    vb.cpus = 1             # Asignar 1 CPU
+    # Especificar la box base
+    config.vm.box = "ubuntu/focal64"
+  
+    # Configurar la cantidad de RAM y CPU
+    config.vm.provider "virtualbox" do |vb|
+      vb.memory = "1024"
+      vb.cpus = 1
+    end
+  
+    # Configurar el aprovisionamiento para instalar Apache
+    config.vm.provision "shell", inline: <<-SHELL
+      sudo apt-get update
+      sudo apt-get install -y apache2
+    SHELL
+  
+    # Compartir la carpeta del servidor web de Apache
+    config.vm.synced_folder "./src", "/var/www/html"
+  
+    # Hacer que la VM exponga el puerto 80 al puerto 8080 del host
+    config.vm.network "forwarded_port", guest: 80, host: 8080
   end
-
-  # Instalación y configuración de Apache
-  config.vm.provision "shell", inline: <<-SHELL
-    sudo apt-get update
-    sudo apt-get install -y apache2
-    echo "<h1>Hola Mundo</h1>" | sudo tee /var/www/html/index.html
-  SHELL
-
-  # Configuración para compartir la carpeta local con el directorio de Apache
-  config.vm.synced_folder ".", "/var/www/html", type: "virtualbox"
-end
